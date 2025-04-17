@@ -1,33 +1,58 @@
-# UPSKILL
+# 🚀 **UPSKILL** 
 
-##Projeto Módulo 1 
+## 📚 Projeto Módulo 1 - HTML, CSS, JavaScript
 
-###HTML, CSS, JAVASCRIPT
+### 🛒 **E-commerce Dinâmico**
 
-##### Deixar a página e ecommerce dinâmica e acrescentar features solicitadas
+Criação de uma página e-commerce dinâmica, com a adição de **novas funcionalidades** solicitadas.
 
-##### Vídeo Explicativo: https://1drv.ms/v/c/8516766ff362dbda/Ec4dKOQdgFNIuJOSZu9lAkoBflGzUn2Ar6k9RHTVioinYg?e=nkpGkq
+🎥 **[Vídeo Explicativo](https://1drv.ms/v/c/8516766ff362dbda/Ec4dKOQdgFNIuJOSZu9lAkoBflGzUn2Ar6k9RHTVioinYg?e=nkpGkq)**
 
-##Projeto Módulo 2 
+---
 
-###BANCO DE DADOS RELACIONAL, SQL, SQL SERVER, STORAGE PROCEDURE, TRANSACTION
+## 📚 Projeto Módulo 2 - Banco de Dados Relacional, SQL Server
 
-##### Criação de um banco de dados relacional de raiz para atender as necessidades de uma Biblioteca
+### 🏛️ **Biblioteca - Banco de Dados Relacional**
 
-##### Vídeo Explicativo: https://1drv.ms/v/c/8516766ff362dbda/EaZLBqokwKtLuc3C4X7m2E4BpRSB3h1d0oWPaNrWm-B_iA?e=l5frCL
+Desenvolvimento de um banco de dados para atender as necessidades de uma **Biblioteca**, utilizando SQL Server, **Procedures** e **Transactions**.
 
-##Projeto Módulo 3
+🎥 **[Vídeo Explicativo](https://1drv.ms/v/c/8516766ff362dbda/EaZLBqokwKtLuc3C4X7m2E4BpRSB3h1d0oWPaNrWm-B_iA?e=l5frCL)**
 
-###C#, .NET FRAMEWORK CORE, WINDOWS FORM, ADO.NET, ENTITY FRAMEWORK, DLLs, MINIMAL API, RAZER PAGES, HTML CSS, JS, SPA, MPA
+---
 
-##### Criação de web aplicação para a gestão de uma Biblioteca
+## 📚 Projeto Módulo 3 - C#, .NET Framework, , ADO.NET, Entity Framework Core, LINQ
 
-##### Vídeo Explicativo: https://1drv.ms/v/c/8516766ff362dbda/ES6VrtZXaM5OqEcXNez2c9EBDts2JjxaLvXVv54LmAXEqQ?e=dRxnpD
+### 📋 **Gestão de Biblioteca**
 
-##Projeto Módulo 4
+Criação de uma **web aplicação** para a gestão de uma **Biblioteca**, com funcionalidades como **Razor Pages**, **Minimal API**, e **Entity Framework**.
 
-###.NET FRAMEWORK CORE, ENTITY FRAMEWORK, WEB API MVC, RAZER PAGES, HTML CSS, JS, SPA, IDENTITY FRAMWORK, JWT
+🎥 **[Vídeo Explicativo](https://1drv.ms/v/c/8516766ff362dbda/ES6VrtZXaM5OqEcXNez2c9EBDts2JjxaLvXVv54LmAXEqQ?e=dRxnpD)**
 
-##### Web aplicação Portal de Empregos - Manutenção de código legado, correção de bugs, refatoramento de código, acréscimo de novas features
+---
 
-##### Vídeo Explicativo: Em andamento
+## 📚 Projeto Módulo 4 - Web API, .NET Framework, Identity Framework, JWT
+
+### 👥 **Portal de Empregos - Manutenção de Código Legado**
+
+Manutenção e refatoração de código legado, com correção de **bugs** e acréscimo de **novas features**, usando **Web API MVC**, **Identity Framework**, **JWT** e **Razor Pages**.
+
+🎥 **[Vídeo Explicativo: Em andamento]**
+
+---
+
+## 🛠️ Ferramentas Usadas
+
+- HTML5, CSS3, JavaScript
+- SQL Server, Stored Procedures, Transactions
+- C#, .NET Framework, Windows Forms,
+- Windows Forms, ADO.NET, Razor Pages, SPA, MPA
+- JWT, Identity Framework, Fluent Api EF Core
+- Git, GitHub
+- Visual Studio, VS Code
+
+---
+
+## 📞 Contato
+
+- [LinkedIn](https://www.linkedin.com/in/brenolucena)
+- [GitHub](https://github.com/Brenorml)
