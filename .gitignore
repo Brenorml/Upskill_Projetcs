@@ -1,0 +1,51 @@
+
+## Ignore arquivos do Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## Ignore diretórios de build
+bin/
+obj/
+[Bb]uild/
+[Bb]uild[Ll]og.*
+
+## Ignore pacotes NuGet (reinstaláveis)
+packages/
+*.nupkg
+project.lock.json
+project.fragment.lock.json
+
+## Ignore arquivos do sistema
+*.log
+*.tlog
+*.tmp
+*.cache
+*.dbmdl
+*.pdb
+
+## Arquivos de publicação
+publish/
+
+## Configurações locais
+*.local.json
+
+## Diretórios do ReSharper
+_ReSharper*/
+*.[Rr]e[Ss]harper
+
+## Diretórios do Rider
+.idea/
+
+## Diretórios do Test Results
+TestResults/
+*.coverage
+*.coveragexml
+
+## Configurações de pacotes
+.nuget/
+
+## Outros
+*.orig
