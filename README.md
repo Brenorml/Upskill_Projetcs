@@ -36,7 +36,7 @@ Criação de uma **web aplicação** para a gestão de uma **Biblioteca**, com f
 
 Manutenção e refatoração de código legado, com correção de **bugs** e acréscimo de **novas features**, usando **Web API MVC**, **Identity Framework**, **JWT** e **Razor Pages**.
 
-🎥 **[Vídeo Explicativo: Em andamento]**
+🎥 **[Vídeo Explicativo: apresentação realizada presencialmente]**
 
 ---
 
