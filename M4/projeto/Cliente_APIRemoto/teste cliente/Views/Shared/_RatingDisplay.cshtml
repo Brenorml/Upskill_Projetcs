@@ -1,0 +1,26 @@
+﻿@model List<teste_cliente.Models.Review>
+
+@{
+    // Calcula a média das avaliações e arredonda para exibir as estrelas
+    var reviewList = Model ?? new List<teste_cliente.Models.Review>();
+    var avg = reviewList.Any() ? reviewList.Average(r => r.Rating) : 0.0;
+    var rounded = (int)Math.Round(avg, MidpointRounding.AwayFromZero);
+}
+
+<div class="mb-2 d-flex align-items-center justify-content-center">
+    <!-- Média antes das estrelas -->
+    <span class="me-2 fw-bold text-warning">@avg.ToString("0.0")</span>
+
+    <!-- Estrelas preenchidas até ao valor arredondado, resto vazias -->
+    @for (int i = 1; i <= 5; i++)
+    {
+        if (i <= rounded)
+        {
+            <i class="fa fa-star text-warning"></i>
+        }
+        else
+        {
+            <i class="fa fa-star-o text-secondary"></i>
+        }
+    }
+</div>

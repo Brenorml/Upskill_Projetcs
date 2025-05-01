@@ -1,0 +1,69 @@
+﻿@{
+    ViewData["BodyClass"] = "home-page";
+}
+
+<body>
+<!-- Cabeçalho -->
+<section class="hero full-width-section">
+    <div class="container-wrapper">
+        <div class="row align-items-center">
+            <div class="col-md-6 hero-text">
+                <h1>
+                    <span class="first-line">Encontra o teu</span>
+                    <span class="second-line">job de <span class="highlight">Sonho!</span></span>
+                </h1>
+                    <form asp-controller="OfertaEmprego" asp-action="Index" method="get" class="search-form">
+                    <input type="text" name="search" placeholder="Título ou palavra chave" />
+                    <button type="submit">Search</button>
+                </form>
+            </div>
+            <div class="col-md-6 hero-image">
+                <img src="~/img/personagem_home.png" alt="Homem com portátil" class="img-fluid" />
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Empresas -->
+<section class="py-5 bg-light text-center">
+    <div class="container-wrapper">
+    <h5 class="mb-4">Os melhores empregos e <span class="text-warning fw-bold">Empresas</span> em todo o mundo!</h5>
+    <div class="d-flex justify-content-center gap-5 flex-wrap">
+        <img src="~/img/logo empresas/slack.svg" alt="Slack" height="40" />
+        <img src="~/img/logo empresas/microsoft.svg" alt="Microsoft" height="40" />
+        <img src="~/img/logo empresas/google.svg" alt="Google" height="40" />
+        <img src="~/img/logo empresas/airbnb.svg" alt="Airbnb" height="40" />
+    </div>
+    </div>
+</section>
+
+<!-- Últimas notícias -->
+<section class="py-5 container">
+    <h6 class="text-warning">Notícias</h6>
+    <h2 class="mb-4 fw-bold">Últimas notícias</h2>
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        @foreach (var noticia in ViewBag.Noticias)
+        {
+            <div class="col">
+                <partial name="_NewsCard" model="noticia" />
+            </div>
+        }        
+    </div>
+</section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            window.addEventListener('scroll', function() {
+                const navbar = document.querySelector('.home-page .nav-bar-fundo');
+
+                if (!navbar) return;
+
+                if (window.scrollY > 100) {
+                    navbar.classList.add('scrolled');
+                } else {
+                    navbar.classList.remove('scrolled');
+                }
+            });
+        });
+    </script>
+</body>

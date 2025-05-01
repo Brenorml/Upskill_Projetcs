@@ -1,0 +1,115 @@
+﻿@model teste_cliente.Models.Review
+@{
+    ViewData["Title"] = "Adicionar Review";
+    var empresa = ViewBag.Empresa as teste_cliente.Models.Empresa;
+}
+
+<div class="container mt-4">
+    <h1>Adicionar Review para @empresa.Nome</h1>
+
+    <form asp-action="Create" method="post">
+        <input type="hidden" asp-for="IdEmpresa" />
+        <input type="hidden" asp-for="NomeUsuario" />
+        <input type="hidden" asp-for="DataCriacao" />
+
+        <div class="form-group mb-3">
+            <label asp-for="Titulo" class="form-label">Título</label>
+            <input asp-for="Titulo" class="form-control" required />
+            <span asp-validation-for="Titulo" class="text-danger"></span>
+        </div>
+
+        <div class="form-group mb-3">
+            <label asp-for="Rating" class="form-label">Rating</label>
+            <div class="rating-stars" id="rating-stars">
+                <input type="hidden" asp-for="Rating" id="rating-value" value="0" />
+                <i class="far fa-star" data-value="1"></i>
+                <i class="far fa-star" data-value="2"></i>
+                <i class="far fa-star" data-value="3"></i>
+                <i class="far fa-star" data-value="4"></i>
+                <i class="far fa-star" data-value="5"></i>
+            </div>
+            <span asp-validation-for="Rating" class="text-danger"></span>
+        </div>
+
+        <div class="form-group mb-3">
+            <label asp-for="Descricao" class="form-label">Descrição</label>
+            <textarea asp-for="Descricao" class="form-control" rows="5" required></textarea>
+            <span asp-validation-for="Descricao" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-3">Enviar Review</button>
+        <a asp-controller="Review" asp-action="Index" asp-route-empresaId="@Model.IdEmpresa" class="btn btn-secondary mt-3">Cancelar</a>
+    </form>
+</div>
+
+@section Styles {
+    <style>
+        .rating-stars {
+            color: #ffc107;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+            .rating-stars i {
+                margin-right: 2px;
+            }
+
+                .rating-stars i:hover,
+                .rating-stars i.filled {
+                    color: #ffc107 !important;
+                }
+    </style>
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
+    <script>
+                $(document).ready(function () {
+            // Sistema de estrelas clicáveis
+            $('.rating-stars i').on('click', function () {
+                var value = parseInt($(this).data('value'));
+                var ratingStars = $(this).parent();
+                var ratingValueInput = ratingStars.find('input[name="Rating"]');
+
+                // Atualiza o valor do rating
+                ratingValueInput.val(value);
+
+                // Atualiza a visualização das estrelas
+                ratingStars.find('i').each(function () {
+                    if (parseInt($(this).data('value')) <= value) {
+                        $(this).removeClass('far').addClass('fas filled');
+                    } else {
+                        $(this).removeClass('fas filled').addClass('far');
+                    }
+                });
+            });
+
+            // Hover nas estrelas
+            $('.rating-stars i').hover(
+                function () {
+                    var value = parseInt($(this).data('value'));
+                    $(this).parent().find('i').each(function () {
+                        if (parseInt($(this).data('value')) <= value) {
+                            $(this).removeClass('far').addClass('fas');
+                        } else {
+                            $(this).removeClass('fas').addClass('far');
+                        }
+                    });
+                },
+                function () {
+                    var ratingStars = $(this).parent();
+                    var ratingValue = parseInt(ratingStars.find('input[name="Rating"]').val()) || 0;
+                    ratingStars.find('i').each(function () {
+                        if (parseInt($(this).data('value')) <= ratingValue) {
+                            $(this).removeClass('far').addClass('fas filled');
+                        } else {
+                            $(this).removeClass('fas filled').addClass('far');
+                        }
+                    });
+                }
+            );
+        });
+    </script>
+}
+

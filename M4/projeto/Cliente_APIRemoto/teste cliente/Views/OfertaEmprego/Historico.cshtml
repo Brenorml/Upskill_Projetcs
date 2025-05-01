@@ -1,0 +1,90 @@
+﻿@model List<teste_cliente.Models.OfertaEmprego>
+
+@{
+    ViewData["Title"] = "Histórico de Ofertas";
+}
+
+<div class="container" style="padding-top:30px; padding-bottom:40px">
+    <h3 class="my-4 oferta_header">Histórico de Ofertas</h3>
+
+    <div class="card shadow-none border-0">
+        <div class="card-header oferta_fundo_header">
+            <h6 class="oferta_header mb-0">Lista de Ofertas Criadas</h6>
+        </div>
+        <div class="card-body bg-white">
+            <table class="table table-bordered table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th scope="col" style="white-space: nowrap;">Candidaturas</th>
+                        <th scope="col">Título</th>
+                        <th scope="col">Localização</th>
+                        <th scope="col">Regime Trabalho</th>
+                        <th scope="col">Requisitos</th>
+                        <th scope="col">Vaga</th>
+                        <th scope="col">Visualizações</th>
+                        <th scope="col">Editar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var oferta in Model)
+                    {
+                        <tr>
+                            <td>
+                                <a href="#" onclick="carregarCandidaturas(@oferta.IdOferta)" class="btn btn-primary btn-sm text-white" style="border-radius: 30px; background-color:#5de4d9; border:0;">
+                                    Ver Candidatos
+                                </a>
+                            </td>
+                            <td>@oferta.Titulo</td>
+                            <td>@oferta.Localização</td>
+                            <td>@oferta.RegimeTrabalho</td>
+                            <td>@oferta.Requisitos</td>
+                            <td>
+                                @if (oferta.VagaDisponivel == true)
+                                {
+                                    <span class="text-success">🟢 Aberta</span>
+                                }
+                                else
+                                {
+                                    <span class="text-danger">🔴 Fechada</span>
+                                }
+                            </td>
+                            <td>@oferta.Contagem</td>
+                            <td>
+                                <a class="btn btn-warning btn-sm text-white" style="border-radius: 30px;" href="@Url.Action("Edit", "OfertaEmprego", new { id = oferta.IdOferta })">Editar</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <div id="candidaturasContainer"></div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function carregarCandidaturas(idOferta) {
+            $.get('@Url.Action("CarregarCandidaturas", "AplicacaoTrabalho")', { idOferta: idOferta })
+                .done(function (data) {
+                    $('#candidaturasContainer').html(data);
+                    document.getElementById("candidaturasContainer").scrollIntoView({
+                    behavior: "smooth",
+                    block: "start" 
+                });
+            })
+                .fail(function (xhr, status, error) {
+                    console.log('Erro ao carregar candidaturas: ' + error);
+                    $('#candidaturasContainer').html('<div class="alert alert-danger">Erro ao carregar candidaturas.</div>');
+                });
+        }
+
+        $(document).ready(function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            const idOferta = urlParams.get('idOferta');
+            if (idOferta) {
+                carregarCandidaturas(idOferta);
+            }
+        });
+    </script>
+}

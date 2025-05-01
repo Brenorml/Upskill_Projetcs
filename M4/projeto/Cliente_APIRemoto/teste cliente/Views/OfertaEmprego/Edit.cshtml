@@ -1,0 +1,172 @@
+﻿@model teste_cliente.Models.OfertaEmprego
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<div class="container" style="padding-top:30px; padding-bottom:40px">
+    <h3 class="my-4 oferta_header">Editar Oferta de Emprego</h3>
+    <form asp-action="Edit" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <input type="hidden" asp-for="IdOferta" />
+        <input type="hidden" asp-for="IdEmpresa" />
+
+        <div class="card mb-4 shadow-none border-0" style="padding-top:30px;">
+            <div class="card-header border-0 oferta_fundo_header">
+                <h6 class="oferta_header">Detalhes</h6>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <label asp-for="Titulo" class="form-label">Título:</label>
+                        <input asp-for="Titulo" class="form-control" placeholder="Título..." required />
+                        <span asp-validation-for="Titulo" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label asp-for="Localização" class="form-label">Localização:</label>
+                        <input asp-for="Localização" class="form-control" placeholder="Localização..." />
+                        <span asp-validation-for="Localização" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label asp-for="TipoContrato" class="form-label">Tipo de Contrato:</label>
+                        <input asp-for="TipoContrato" class="form-control" placeholder="Tipo de Contrato..." />
+                        <span asp-validation-for="TipoContrato" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label asp-for="Salario" class="form-label">Salário:</label>
+                        <input asp-for="Salario" class="form-control" placeholder="Salário..." />
+                        <span asp-validation-for="Salario" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <label asp-for="Jornada" class="form-label">Jornada:</label>
+                        <input asp-for="Jornada" class="form-control" placeholder="Jornada..." />
+                        <span asp-validation-for="Jornada" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label asp-for="Requisitos" class="form-label">Requisitos:</label>
+                        <input asp-for="Requisitos" class="form-control" placeholder="Requisitos..." />
+                        <span asp-validation-for="Requisitos" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label asp-for="RegimeTrabalho" class="form-label">Regime de Trabalho:</label>
+                        <input asp-for="RegimeTrabalho" class="form-control" placeholder="Regime de Trabalho..." />
+                        <span asp-validation-for="RegimeTrabalho" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label asp-for="VagaDisponivel" class="form-label fw-bold">Oferta Disponível:</label>
+                        <select asp-for="VagaDisponivel" class="form-control">
+                            <option value="">Selecione...</option>
+                            <option value="true">Sim</option>
+                            <option value="false">Não</option>
+                        </select>
+                        <span asp-validation-for="VagaDisponivel" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-4 shadow-none border-0">
+            <div class="card-header oferta_fundo_header">
+                <h6 class="oferta_header">Descrição das funções</h6>
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <textarea asp-for="Descricao" class="form-control" rows="10" placeholder="Funções..."></textarea>
+                    <span asp-validation-for="Descricao" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-left">
+            <button type="submit" class="btn btn-warning text-white font-weight-bold px-4" style="border-radius: 30px;">Salvar alterações</button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+
+
+
+
+
+
+
+@* <h1>Edit</h1>
+
+<h4>OfertaEmprego</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="IdOferta" class="control-label"></label>
+                <input asp-for="IdOferta" class="form-control" />
+                <span asp-validation-for="IdOferta" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="IdEmpresa" class="control-label"></label>
+                <input asp-for="IdEmpresa" class="form-control" />
+                <span asp-validation-for="IdEmpresa" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Titulo" class="control-label"></label>
+                <input asp-for="Titulo" class="form-control" />
+                <span asp-validation-for="Titulo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Salario" class="control-label"></label>
+                <input asp-for="Salario" class="form-control" />
+                <span asp-validation-for="Salario" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Jornada" class="control-label"></label>
+                <input asp-for="Jornada" class="form-control" />
+                <span asp-validation-for="Jornada" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Localização" class="control-label"></label>
+                <input asp-for="Localização" class="form-control" />
+                <span asp-validation-for="Localização" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="RegimeTrabalho" class="control-label"></label>
+                <input asp-for="RegimeTrabalho" class="form-control" />
+                <span asp-validation-for="RegimeTrabalho" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TipoContrato" class="control-label"></label>
+                <input asp-for="TipoContrato" class="form-control" />
+                <span asp-validation-for="TipoContrato" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Requisitos" class="control-label"></label>
+                <input asp-for="Requisitos" class="form-control" />
+                <span asp-validation-for="Requisitos" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="VagaDisponivel" class="control-label"></label>
+                <input asp-for="VagaDisponivel" class="form-control" />
+                <span asp-validation-for="VagaDisponivel" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+} *@

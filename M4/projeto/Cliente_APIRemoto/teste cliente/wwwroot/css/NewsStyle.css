@@ -1,0 +1,56 @@
+﻿/* Estilos para os cards de notícias */
+.news-card {
+    overflow: hidden;
+    border: none;
+    border-radius: 8px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 350px;
+}
+
+    .news-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+
+.news-card-image {
+    width: 100%;
+    height: 350px;
+    object-fit: cover;
+    object-position: center;
+}
+
+.news-card-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(21, 199, 207, 0.95); /* Cor turquesa */
+    padding: 15px;
+    transition: all 0.3s ease;
+}
+
+.news-card-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: #000; /* Título em preto */
+}
+
+.news-card-description {
+    font-size: 0.85rem;
+    color: white; /* Descrição em branco */
+    margin-bottom: 10px;
+}
+
+.news-card-link {
+    color: #FF8C00; /* Link em laranja */
+    font-weight: 500;
+    text-decoration: none;
+    font-size: 1.1rem;
+    display: inline-block;
+}
+
+    .news-card-link:hover {
+        color: #FF6347; /* Laranja mais escuro no hover */
+        text-decoration: underline;
+    }

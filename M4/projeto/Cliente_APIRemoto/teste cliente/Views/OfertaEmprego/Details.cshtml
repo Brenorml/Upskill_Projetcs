@@ -1,0 +1,271 @@
+﻿@model teste_cliente.Models.OfertaEmprego
+@{
+    ViewData["Title"] = "Detalhes da Oferta";
+    var mensagem = TempData["Mensagem"] as string;
+}
+
+<div class="job-details-container">
+    <!-- Cabeçalho da oferta -->
+    <div class="job-header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="job-title">@Model.Titulo</h1>
+                    <div class="job-meta">
+                        <span><i class="fas fa-map-marker-alt me-2"></i> @Model.Localização</span>
+                        <span><i class="far fa-clock me-2"></i> @Model.Jornada</span>
+                        <span><i class="fas fa-home me-2"></i> @Model.RegimeTrabalho</span>
+                        <span><i class="fas fa-user-tie me-2"></i> @Model.TipoContrato</span>
+                        <span><i class="fas fa-euro-sign me-2"></i> @Model.Salario</span>
+                    </div>
+                </div>
+                <div class="col-md-4 text-end">
+                    @if (!User.Identity.IsAuthenticated || User.IsInRole(SD.Role_Candidato))
+                    {
+                        <form asp-controller="AplicacaoTrabalho" asp-action="Candidatar" method="post">
+                            <input type="hidden" name="id" value="@Model.IdOferta" />
+                            <button type="submit" class="btn candidatar-btn">
+                                Candidatar-me
+                            </button>
+                        </form>
+                    }
+
+                    @if (!string.IsNullOrEmpty(mensagem))
+                    {
+                        <div id="message" class="text-danger mt-2">
+                            @mensagem
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Conteúdo principal -->
+    <div class="container main-content mt-4">
+        <div class="row">
+            <!-- Coluna da esquerda - Detalhes da oferta -->
+            <div class="col-md-8">
+                <div class="card content-card mb-4">
+                    <div class="card-body">
+                        <div class="job-description" style="white-space: pre-line;">
+                            @Model.Descricao
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Coluna da direita - Informações da empresa -->
+            <div class="col-md-4">
+                <div class="card company-card mb-4">
+                    <div class="card-body text-center">
+                        @if (!string.IsNullOrEmpty(Model.LogoEmpresaBase64))
+                        {
+                            <img src="data:image/jpeg;base64,@Model.LogoEmpresaBase64" alt="Logo Empresa" class="img-fluid company-logo" style="max-width: 120px;">
+                        }
+                        else
+                        {
+                            <img src="~/img/logo-empresa-placeholder.png" alt="Logo Empresa" class="img-fluid company-logo mb-3">
+                        }
+                        <br />
+                        <br />
+                        <!-- Exibir a média de avaliações usando a partial -->
+                        <partial name="_RatingDisplay" model="ViewBag.Reviews as List<teste_cliente.Models.Review>" />                        
+                    </div>
+                </div>
+
+                <div class="card job-info-card">
+                    <div class="card-body">
+                        <h3 class="info-title">Informações da Vaga</h3>
+                        <ul class="job-info-list">
+                            <li>
+                                <span class="info-label"><i class="far fa-clock me-2"></i> Jornada:</span>
+                                <span class="info-value">@Model.Jornada</span>
+                            </li>
+                            <li>
+                                <span class="info-label"><i class="fas fa-euro-sign me-2"></i> Salário:</span>
+                                <span class="info-value">@Model.Salario</span>
+                            </li>
+                            <li>
+                                <span class="info-label"><i class="fas fa-user-tie me-2"></i> Tipo de Contrato:</span>
+                                <span class="info-value">@Model.TipoContrato</span>
+                            </li>
+                            <li>
+                                <span class="info-label"><i class="fas fa-map-marker-alt me-2"></i> Localização:</span>
+                                <span class="info-value">@Model.Localização</span>
+                            </li>
+                            <li>
+                                <span class="info-label"><i class="fas fa-home me-2"></i> Regime de Trabalho:</span>
+                                <span class="info-value">@Model.RegimeTrabalho</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4 mb-5">
+            <div class="col-12">
+                <div class="d-flex">
+                    <a asp-action="Index" class="btn voltar-btn me-3">Voltar</a>
+                    @if (User.IsInRole(SD.Role_Admin))
+                    {
+                        <a asp-action="Edit" asp-route-id="@Model.IdOferta" class="btn edit-btn me-3">Editar</a>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Função para ocultar a mensagem após 3 segundos
+        $(document).ready(function() {
+            if ($('#message').length) {
+                setTimeout(function() {
+                    $('#message').fadeOut('slow');
+                }, 3000); // Desaparece após 3 segundos
+            }
+        });
+    </script>
+}
+
+@section Styles {
+    <style>
+        /* Estilos do cabeçalho da oferta */
+        .job-header {
+            background-color: #f0f0f0;
+            padding: 40px 0;
+            margin-bottom: 20px;
+        }
+
+        .job-title {
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .job-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            color: #666;
+        }
+
+            .job-meta span {
+                display: inline-flex;
+                align-items: center;
+            }
+
+        /* Cards */
+        .content-card, .company-card, .job-info-card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+        }
+
+        /* Listas */
+        .job-info-list {
+            padding-left: 20px;
+            margin-bottom: 20px;
+            color: #555;
+        }
+
+        .job-info-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+            .job-info-list li {
+                margin-bottom: 12px;
+                display: flex;
+                justify-content: space-between;
+            }
+
+        .info-label {
+            color: #666;
+            font-weight: 500;
+        }
+
+        .info-value {
+            color: #333;
+            font-weight: 600;
+        }
+
+        /* Logo da empresa */
+        .company-logo {
+            max-width: 120px;
+            max-height: 120px;
+            margin: 0 auto;
+        }
+
+        /* Avaliações */
+        .rating {
+            margin-top: 15px;
+        }
+
+        .rating-score {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            margin: 5px 0;
+        }
+
+        /* Botões */
+        .candidatar-btn {
+            background-color: #ffa047;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 10px 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+            .candidatar-btn:hover {
+                color: white;
+                background-color: #6EE5E9;
+            }
+
+        .voltar-btn {
+            background-color: #6EE5E9;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 10px 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+            .voltar-btn:hover {
+                color: white;
+                background-color: #ffa047;
+            }
+
+        .edit-btn {
+            background-color: #ffa047;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 10px 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+            .edit-btn:hover {
+                background-color: #f09040;
+            }
+
+        /* Informações da empresa */
+        .info-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+    </style>
+}

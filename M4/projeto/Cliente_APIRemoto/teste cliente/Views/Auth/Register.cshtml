@@ -1,0 +1,164 @@
+﻿@model teste_cliente.DTOs.RegisterationRequestDTO
+
+<div class="modal-overlay" id="registoModal">
+    <div class="modal-content" id="modalContent">
+        <button class="close-btn" id="closeModalBtn">&times;</button>
+
+
+        <h3>Registar</h3>
+
+        <form method="post">
+            <div asp-validation-summary="All" class="text-danger text-center mb-2"></div>
+
+            <input asp-for="UserName" type="text" class="form-control" placeholder="UserName..." />
+            <input asp-for="Email" type="text" class="form-control" placeholder="Email..." />
+            <input asp-for="Password" type="password" class="form-control" placeholder="Password..." />
+
+            <label for="role">Tipo de Perfil:</label>
+            <select asp-for="Role" name="role" id="role" class="form-control mb-3">
+                @if (User.IsInRole(SD.Role_Admin))
+                {
+                    <option value="Admin">Administrativo</option>
+
+                }                
+                else
+                {
+                    <option value="Candidato">Candidato</option>
+                    <option value="Empresa">Empresa</option>
+                }
+            </select>
+
+            <button type="submit" class="btn-register">Registar</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const form = document.querySelector("form");
+            const errorDiv = document.querySelector(".text-danger");
+
+            form.addEventListener("submit", function (e) {
+                const password = document.querySelector("input[name='Password']").value;
+                const email = document.querySelector("input[name='Email']").value;
+                let errors = [];
+
+                // Validação da password
+                if (!/[A-Z]/.test(password)) {
+                    errors.push("A senha deve conter pelo menos uma letra maiúscula.");
+                }
+                if (!/[0-9]/.test(password)) {
+                    errors.push("A senha deve conter pelo menos um número.");
+                }
+                if (!/[^a-zA-Z0-9]/.test(password)) {
+                    errors.push("A senha deve conter pelo menos um caractere especial.");
+                }
+
+                // Validação do e-mail
+                if (!/^[^\s@@]+@@[^\s@@]+\.[^\s@@]+$/.test(email)) {
+                    errors.push("Digite um e-mail válido.");
+                }
+
+                // Exibir erros e impedir envio
+                errorDiv.innerHTML = ""; // Limpa mensagens anteriores
+                if (errors.length > 0) {
+                    e.preventDefault(); // <<< IMPEDE o envio do formulário
+                    errors.forEach(err => {
+                        errorDiv.innerHTML += `<div>${err}</div>`;
+                    });
+                }
+            });
+
+            // Fechar o modal corretamente
+            const modal = document.getElementById('registoModal');
+            const closeBtn = document.getElementById('closeModalBtn');
+            const modalContent = document.getElementById('modalContent');
+            
+
+            closeBtn.addEventListener('click', () => {
+                window.location.href = '/Home/Index';
+            });
+            
+
+            modal.addEventListener('click', (event) => {
+                if (!modalContent.contains(event.target)) {
+                    window.location.href = '/Home/Index';
+                }
+            });
+            
+
+        });
+    </script>
+}
+
+
+
+<style>
+
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: linear-gradient(to bottom right, #00B8D4, #6EE5E9);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        animation: fadeIn 0.3s ease-in-out;
+    }
+
+    .modal-content {
+        background-color: white;
+        border-radius: 20px;
+        padding: 2rem;
+        width: 90%;
+        max-width: 360px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        position: relative;
+        animation: slideDown 0.3s ease-in-out;
+    }
+
+    .form-control {
+        margin-bottom: 1rem;
+        border-radius: 10px;
+    }
+
+    .btn-register {
+        background-color: #F89B3D;
+        color: white;
+        border: none;
+        border-radius: 30px;
+        padding: 0.6rem 1.2rem;
+        width: 50%;
+        font-weight: bold;
+        margin: 0 auto;
+        display: block;
+    }
+
+    .btn-register:hover {
+        background-color: #5de4d9;
+    }
+
+    .close-btn {
+        position: absolute;
+        top: 12px;
+        right: 16px;
+        font-size: 1.4rem;
+        cursor: pointer;
+        border: none;
+        background: none;
+        color: #999;
+    }
+
+    h3 {
+        text-align: center;
+        margin-bottom: 1rem;
+        font-weight: 600;
+    }
+
+</style>

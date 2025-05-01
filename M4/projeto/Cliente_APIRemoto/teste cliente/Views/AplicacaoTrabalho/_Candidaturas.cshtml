@@ -1,0 +1,113 @@
+﻿@model IEnumerable<teste_cliente.Models.AplicacaoTrabalho>
+
+@{
+    ViewData["Title"] = "Candidaturas";
+}
+
+<div class="container" style="padding-top:30px; padding-bottom:40px">
+    <h3 class="my-4 oferta_header">Candidaturas</h3>
+
+    <div class="card shadow-none border-0">
+        <div class="card-header oferta_fundo_header">
+            <h6 class="oferta_header mb-0">Lista de Candidaturas </h6>
+        </div>
+        <div class="card-body bg-white">
+            <table class="table table-bordered table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>Nome</th>
+                        <th>Email</th>
+                        <th>Telefone</th>
+                        <th>Data</th>
+                        <th>Currículo</th>
+                        <th>LinkedIn</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var candidatura in Model)
+                    {
+                        <tr>
+                            <td>@candidatura.Candidato?.Nome</td>
+                            <td>@candidatura.Candidato?.Email</td>
+                            <td>@candidatura.Candidato?.Telefone</td>
+                            <td>@candidatura.DataAplicacao.ToString("dd/MM/yyyy")</td>
+                            <td>
+                                <button class="btn btn-warning btn-sm text-white" style="border-radius: 30px;"
+                                        onclick="downloadCV(@candidatura.Candidato?.IdCandidato, @candidatura.IdOferta)">
+                                    Descarregar
+                                </button>
+                            </td>
+                            <td>
+                                <a class="btn btn-warning btn-sm text-white" style="border-radius: 30px;" href="@candidatura.Candidato?.LinkedIn" target="_blank" rel="noopener noreferrer">
+                                    Ver Perfil
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para erros -->
+<div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="errorModalLabel">Atenção!</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p id="errorMessage"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="continueButton">Continuar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Armazenar o idOferta atual
+    let currentIdOferta = null;
+
+    // Definir o idOferta com base no primeiro item do modelo
+    @if (Model != null && Model.Any())
+    {
+        @:currentIdOferta = @Model.First().IdOferta;
+    }
+
+    async function downloadCV(idCandidato, idOferta) {
+        try {
+            // Atualizar o idOferta atual
+            currentIdOferta = idOferta;
+            console.log('Chamando downloadCV com idCandidato: ' + idCandidato + ', idOferta: ' + idOferta);
+
+            const response = await fetch('/FileCV/Download?idCandidato=' + idCandidato);
+            if (response.ok && response.headers.get('content-type').includes('application/pdf')) {
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `Curriculo_Candidato_${idCandidato}.pdf`;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+            } else {
+                const data = await response.json();
+                if (!data.success) {
+                    console.log('Erro retornado: ' + data.message);
+                    jQuery('#errorMessage').text(data.message);
+                    jQuery('#continueButton').attr('onclick', `window.location.href='/OfertaEmprego/Historico?idOferta=${currentIdOferta}'`);
+                    jQuery('#errorModal').modal('show');
+                }
+            }
+        } catch (error) {
+            console.log('Erro no downloadCV: ' + error.message);
+            jQuery('#errorMessage').text('Ocorreu um erro ao tentar baixar o currículo.');
+            jQuery('#continueButton').attr('onclick', `window.location.href='/OfertaEmprego/Historico?idOferta=${currentIdOferta}'`);
+            jQuery('#errorModal').modal('show');
+        }
+    }
+</script>

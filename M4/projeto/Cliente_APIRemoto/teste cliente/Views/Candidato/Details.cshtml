@@ -1,0 +1,277 @@
+﻿@model teste_cliente.Models.Candidato
+
+@{
+    ViewData["Title"] = "Perfil";
+}
+
+<div class="container" style="padding-top:30px; padding-bottom:40px">
+
+    @* @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger" role="alert">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success" role="alert">
+            @TempData["SuccessMessage"]
+        </div>
+    } *@
+
+    <h3 class="my-4 oferta_header">Perfil</h3>
+
+
+    <div class="row">
+        <!-- Lado Esquerdo: Info e Foto -->
+        <div class="col-md-4 text-center">
+            @{
+                var defaultImage = "/img/icone_perfil.png";
+            }
+
+            @if (Model != null)
+            {
+
+                <img src="@Url.Action("GetImage", "Foto", new { id = Model.IdCandidato })"
+                     onerror="this.onerror=null;this.src='@defaultImage'"
+                     alt="Foto de perfil"
+                     class="rounded-circle mb-3"
+                     style="width: 150px; height: 150px; object-fit: cover;" />
+            }
+            else
+            {
+                <img src="@defaultImage"
+                     alt="Foto de perfil"
+                     class="rounded-circle mb-3"
+                     style="width: 150px; height: 150px; object-fit: cover;" />
+                <p class="text-danger">Erro ao carregar candidato.</p>
+            }
+
+            <form asp-action="CreateOrUpdate" asp-controller="Foto" method="post" enctype="multipart/form-data" id="fotoForm">
+                <input type="hidden" name="IdCandidatoFoto" value="@Model.IdCandidato" />
+
+
+                <!-- Input de ficheiro escondido -->
+                <input type="file" name="file" id="fileInput" style="display: none;" accept="image/*" />
+
+                <!-- Botão único que simula o clique no input file -->
+                <button type="button"
+                        class="btn btn-warning text-white font-weight-bold px-4" style="border-radius: 30px;"
+                        onclick="document.getElementById('fileInput').click();">
+                    Atualizar foto
+                </button>
+            </form>
+
+            <script>
+                // Quando o utilizador escolhe um ficheiro, o form é submetido automaticamente
+                document.getElementById('fileInput').addEventListener('change', function () {
+                    if (this.files.length > 0) {
+                        document.getElementById('fotoForm').submit();
+                    }
+                });
+            </script>
+
+            <br/>
+
+            <h5 class="text-primary">@Model.Nome</h5>
+            <p class="text-muted mb-5">@Model.Email</p>
+
+
+            <div class="text-start mt-5">
+                <h5 style="color:#5de4d9"><strong>Informação:</strong></h5>
+                <p><strong>Nome:</strong>&nbsp;&nbsp;@Model.Nome</p>
+                <p><strong>Email:</strong>&nbsp;&nbsp;@Model.Email</p>
+                <p><strong>Telefone:</strong>&nbsp;&nbsp;@Model.Telefone</p>
+                <p><strong>Morada:</strong>&nbsp;&nbsp;@Model.Morada</p>
+                <p>
+                    <strong>Data de nascimento:</strong>&nbsp;&nbsp;
+                    @(Model.DataNasc.HasValue ? Model.DataNasc.Value.ToString("dd/MM/yyyy") : "")
+                </p>
+                <p><strong>LinkedIn:</strong>&nbsp;&nbsp;@Model.LinkedIn</p>
+            </div>
+        </div>
+
+        <!-- Lado Direito: Formulário de edição -->
+        <div class="col-md-8">
+            <h5 class="mb-3 fw-bold">Editar detalhes:</h5>
+
+            <form asp-action="Edit" method="post" id="editForm">
+                <input type="hidden" asp-for="IdCandidato" />
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label asp-for="Nome">Nome</label>
+                        <input asp-for="Nome" class="form-control" />
+                        <span asp-validation-for="Nome" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label>Telefone</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">+351</span>
+                            </div>
+                            <input asp-for="Telefone"
+                                   class="form-control"
+                                   type="text"
+                                   pattern="\d{9}"
+                                   inputmode="numeric"
+                                   maxlength="9"
+                                   minlength="9"
+                                   required
+                                   placeholder="Digite seu telefone" />
+
+                        </div>
+                        <span asp-validation-for="Telefone" class="text-danger"></span>
+                    </div>
+                </div>
+                <br/>
+
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label asp-for="Email">Email</label>
+                        <input asp-for="Email" class="form-control" id="emailInput" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                        <span id="emailError" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label asp-for="DataNasc">Data de nascimento</label>
+                        <input asp-for="DataNasc" type="date" class="form-control" />
+                        <span asp-validation-for="DataNasc" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <br />
+
+                <div class="form-group">
+                    <label asp-for="Morada">Morada</label>
+                    <input asp-for="Morada" class="form-control" />
+                    <span asp-validation-for="Morada" class="text-danger"></span>
+                </div>
+
+                <br />
+
+                <div class="form-group">
+                    <label asp-for="LinkedIn">LinkedIn</label>
+                    <input asp-for="LinkedIn" class="form-control" />
+                    <span asp-validation-for="LinkedIn" class="text-danger"></span>
+                </div>
+                <br />
+
+                <button type="submit" class="btn btn-warning text-white font-weight-bold px-4" style="border-radius: 30px;">Salvar alterações</button>
+            </form>
+
+            <!-- Zona password -->
+            <hr class="my-4" />
+            <h5 class="fw-bold">Mudar password</h5>
+            <form asp-action="ChangePassword" asp-route-id="@Model.IdCandidato" method="post" id="pwdForm">
+                <input type="hidden" name="id" value="@Model.IdCandidato" />
+
+                <div class="row">
+                    <div class="form-group col-md-4">
+                        <label>Current password</label>
+                        <input name="currentPassword" id="currentPassword"
+                               type="password" class="form-control" required />
+                        <span id="errCurrent" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label>New password</label>
+                        <input name="newPassword" id="newPassword"
+                               type="password" class="form-control" required />
+                        <span id="errNew" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label>Confirm password</label>
+                        <input name="confirmPassword" id="confirmPassword"
+                               type="password" class="form-control" required />
+                        <span id="errConfirm" class="text-danger"></span>
+                    </div>
+                </div>
+                <br />
+                <button type="submit" class="btn btn-warning text-white px-4" style="border-radius: 30px;">Salvar alterações</button>
+            </form>
+
+
+            <!-- Separador e mensagem para apagar a conta -->
+            <hr class="my-4" />
+            <div>
+                <p class="lead">Pretende eliminar a sua conta?</p>
+                <form asp-controller="Candidato"
+                      asp-action="Delete"
+                      asp-route-id="@Model.IdCandidato"
+                      method="get"
+                      onsubmit="return confirm('Tem certeza?');">
+                    <button type="submit" class="btn btn-danger" style="border-radius: 30px;">Apagar conta</button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var form = document.getElementById('editForm');
+        var emailInput = document.getElementById('emailInput');
+        var emailError = document.getElementById('emailError');
+
+        form.addEventListener('submit', function (event) {
+            var emailValue = emailInput.value.trim();
+
+            // Checar se o email tem "@@" e "."
+            if (emailValue === '' || !emailValue.includes('@@') || !emailValue.includes('.')) {
+                event.preventDefault(); // Impede o envio do formulário
+                emailError.textContent = 'Por favor, insira um email válido.';
+            } else {
+                emailError.textContent = ''; // Limpa o erro se o email for válido
+            }
+        });
+    });
+
+
+            document.addEventListener('DOMContentLoaded', () => {
+          var form = document.getElementById('pwdForm');
+          var cur = document.getElementById('currentPassword');
+          var neu = document.getElementById('newPassword');
+          var conf = document.getElementById('confirmPassword');
+
+          var eCur = document.getElementById('errCurrent');
+          var eNeu = document.getElementById('errNew');
+          var eConf = document.getElementById('errConfirm');
+
+          form.addEventListener('submit', function(e) {
+            // limpa msgs
+            eCur.textContent = eNeu.textContent = eConf.textContent = '';
+
+            let errors = [];
+
+            // 1) regras Identity front-end (exemplo)
+            let pwd = neu.value;
+            if (!/[A-Z]/.test(pwd))
+              errors.push({field:eNeu, msg:"Deve ter ao menos 1 maiúscula."});
+            if (!/[0-9]/.test(pwd))
+              errors.push({field:eNeu, msg:"Deve ter ao menos 1 número."});
+            if (!/[^a-zA-Z0-9]/.test(pwd))
+              errors.push({field:eNeu, msg:"Deve ter ao menos 1 caractere especial."});
+            if (pwd.length < 6)
+              errors.push({field:eNeu, msg:"Mínimo 6 caracteres."});
+
+            // 2) confirmação bate?
+            if (neu.value !== conf.value)
+              errors.push({field:eConf, msg:"Confirmação não confere."});
+
+            if (errors.length > 0) {
+              e.preventDefault();
+              errors.forEach(err => err.field.textContent = err.msg);
+            }
+          });
+        });
+    </script>
+
+
+}

@@ -1,0 +1,189 @@
+﻿@model IEnumerable<teste_cliente.Models.Review>
+@{
+    ViewData["Title"] = "Histórico de Reviews";
+    var empresa = ViewBag.Empresa as teste_cliente.Models.Empresa;
+    var logoBase64 = ViewBag.LogoBase64 as string;
+}
+
+<div class="container" style="padding-top:30px; padding-bottom:40px">
+    <div class="row">
+        <div class="col-md-12">
+            <h3 class="my-4 oferta_header">Reviews</h3>
+
+            <!-- Exibir mensagens de erro, se houver -->
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div class="alert alert-danger">
+                    @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                    {
+                        <p>@error.ErrorMessage</p>
+                    }
+                </div>
+            }
+
+            <!-- Exibir informações da empresa e reviews, se disponíveis -->
+            @if (empresa != null)
+            {
+                <div class="card mb-4">
+                    <div class="card-header text-center" style="background-color: #f7f7f7;">
+                        @if (!string.IsNullOrEmpty(logoBase64))
+                        {
+                            <img src="data:image/png;base64,@logoBase64" alt="Logo da @empresa.Nome" style="max-width: 200px; margin-bottom: 15px;" />
+                        }
+                        else
+                        {
+                            <p class="text-muted">Nenhuma logo disponível para esta empresa.</p>
+                        }
+                        <h4 class="fw-bold">Reviews para @empresa.Nome</h4>
+                        <h5>Média de Rating: @(Model.Any() ? Model.Average(r => r.Rating).ToString("F1") : "N/A")</h5>
+                    </div>
+                </div>
+
+                @if (!Model.Any())
+                {
+                    <div class="alert alert-info">
+                        Esta empresa ainda não possui reviews.
+                    </div>
+                }
+                else
+                {
+                    <div class="reviews-container">
+                        @foreach (var review in Model.OrderByDescending(r => r.DataCriacao))
+                        {
+                            <div class="review-card mb-3">
+                                <div class="review-content">
+                                    <div class="review-left">
+                                        <div class="rating-number">@review.Rating.ToString("F1")</div>
+                                        <div class="rating-stars">
+                                            @for (int i = 1; i <= 5; i++)
+                                            {
+                                                if (i <= review.Rating)
+                                                {
+                                                    <i class="fa fa-star"></i>
+                                                }
+                                                else
+                                                {
+                                                    <i class="fa fa-star-o"></i>
+                                                }
+                                            }
+                                        </div>
+                                    </div>
+                                    <div class="review-right">
+                                        <h4 class="review-title">@(review.Titulo ?? "Sem Título")</h4>
+                                        <div class="review-author">@review.NomeUsuario, @review.DataCriacao.ToString("dd/MM/yyyy")</div>
+                                        <div class="review-divider"></div>
+                                        <p class="review-description">@review.Descricao</p>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>                    
+                }
+                <!-- Botão Voltar -->
+                <div class="mt-4">
+                    <a asp-controller="OfertaEmprego" asp-action="Index" class="btn voltar-btn">Voltar</a>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .card-header {
+            background-color: #fff;
+            border-bottom: none;
+            padding: 20px;
+        }
+
+        .reviews-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .review-card {
+            background-color: #f7f7f7;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+
+        .review-content {
+            display: flex;
+            padding: 20px;
+        }
+
+        .review-left {
+            flex: 0 0 120px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .rating-number {
+            font-size: 36px;
+            font-weight: bold;
+            color: #333;
+            line-height: 1;
+            margin-bottom: 5px;
+        }
+
+        .rating-stars {
+            color: #ffc107;
+            font-size: 18px;
+        }
+
+        .review-right {
+            flex: 1;
+            padding-left: 19px;
+        }
+
+        .review-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .review-author {
+            color: #777;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+        }
+
+        .review-divider {
+            height: 1px;
+            background-color: #ddd;
+            margin: 10px 0;
+        }
+
+        .review-description {
+            color: #555;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .fa-star, .fa-star-o {
+            margin-right: 2px;
+        }
+
+        .voltar-btn {
+            background-color: #5de4d9;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 10px 25px;            
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-block;
+            margin-left: 20px;
+        }
+
+            .voltar-btn:hover {
+                background-color: #F2994A;
+                color:white;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            }
+    </style>
+}

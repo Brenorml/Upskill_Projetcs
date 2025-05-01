@@ -1,0 +1,346 @@
+﻿@model teste_cliente.Models.Empresa
+
+@section Styles {
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" />
+    <style>
+        /* cabeçalhos cinza  */
+        .reviews-table thead th {
+            color: #6c757d !important;
+            font-size: .9rem !important;
+        }
+        /* células texto preto */
+        .reviews-table tbody td {
+            color: #212529 !important;
+            font-size: .95rem !important;
+            font-weight: 400 !important;
+        }
+            /* nome de utilizador azul */
+            .reviews-table tbody td.username {
+                color: #0d6efd !important;
+                font-weight: 600 !important;
+            }
+    </style>
+}
+
+
+@{
+    ViewData["Title"] = "Perfil da Empresa";
+    // Define uma imagem padrão para o logo (certifica-te de ter a imagem em wwwroot/img)
+    var defaultLogo = Url.Content("~/img/icone_perfil.png");
+}
+
+<div class="container" style="padding-top:30px; padding-bottom:40px">
+    <h3 class="my-4 oferta_header">Perfil</h3>
+
+    <div class="row">
+        <!-- Lado Esquerdo: Informação e Logo -->
+        <div class="col-md-4 text-center">
+            @if (Model != null)
+            {
+                // Define o endpoint para obter o logo
+                var logoApi = @Url.Action("GetLogoImage", "Logo", new { id = Model.IdEmpresa });
+                <img src="@logoApi"
+                     onerror="this.onerror=null; this.src='@defaultLogo'"
+                     alt="Logo da Empresa"
+                     class="rounded mb-3"
+                     style="width: 100%; max-width: 200px; height: 120px; object-fit: contain;" />
+            }
+            else
+            {
+                <img src="@defaultLogo"
+                     alt="Logo da Empresa"
+                     class="rounded mb-3"
+                     style="width: 150px; height: 150px; object-fit: cover;" />
+                <p class="text-danger">Erro ao carregar a empresa.</p>
+            }
+
+            <!-- Formulário para atualizar o logo -->
+            <form asp-action="CreateOrUpdateLogo" asp-controller="Logo" method="post" enctype="multipart/form-data" id="logoForm">
+                <input type="hidden" name="IdEmpresaFoto" value="@Model.IdEmpresa" />
+                <input type="file" name="file" id="fileInputLogo" style="display: none;" accept="image/*" />
+                <button type="button" class="btn btn-warning text-white font-weight-bold px-4" style="border-radius: 30px;"
+                        onclick="document.getElementById('fileInputLogo').click();">
+                    Atualizar logo
+                </button>
+            </form>
+            <script>
+                document.getElementById('fileInputLogo').addEventListener('change', function(){
+                    if (this.files.length > 0){
+                        document.getElementById('logoForm').submit();
+                    }
+                });
+            </script>
+
+            <br />
+
+            <!-- Exibir a média de avaliações usando a partial -->
+            <partial name="_RatingDisplay" model="ViewBag.Reviews as List<teste_cliente.Models.Review>" />           
+
+            <div class="text-start mt-5">
+                <h5 style="color:#5de4d9"><strong>Informação:</strong></h5>
+                <p><strong>Nome:</strong>&nbsp;&nbsp;@Model.Nome</p>
+                <p><strong>Email:</strong>&nbsp;&nbsp;@Model.Email</p>
+                <p><strong>Telefone:</strong>&nbsp;&nbsp;@Model.Telefone</p>
+                <p><strong>Localidade:</strong>&nbsp;&nbsp;@Model.Localidade</p>
+                <p><strong>Nº de Funcionários:</strong>&nbsp;&nbsp;@Model.NoFuncionarios</p>
+                <p><strong>Zona de Atuação:</strong>&nbsp;&nbsp;@Model.ZonaAtuacao</p>
+                <p><strong>LinkedIn:</strong>&nbsp;&nbsp;@Model.LinkedIn</p>
+                <p><strong>Facebook:</strong>&nbsp;&nbsp;@Model.Facebook</p>
+            </div>
+        </div>
+
+        <!-- Lado Direito: Formulário de edição dos detalhes da Empresa -->
+        <div class="col-md-8">
+            <h5 class="mb-3 fw-bold">Editar detalhes:</h5>
+
+            <form asp-action="Edit" method="post" id="editForm">
+                <input type="hidden" asp-for="IdEmpresa" />
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label asp-for="Nome">Nome</label>
+                        <input asp-for="Nome" class="form-control" />
+                        <span asp-validation-for="Nome" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label asp-for="Telefone">Telefone</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">+351</span>
+                            </div>
+                            <input asp-for="Telefone"
+                                   class="form-control"
+                                   type="text"
+                                   pattern="\d{9}"
+                                   inputmode="numeric"
+                                   maxlength="9"
+                                   minlength="9"
+                                   required
+                                   placeholder="Digite o telefone" />
+                        </div>
+                        <span asp-validation-for="Telefone" class="text-danger"></span>
+                    </div>
+
+                </div>
+                <br />
+
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label asp-for="Email">Email</label>
+                        <input asp-for="Email" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label asp-for="Localidade">Localidade</label>
+                        <input asp-for="Localidade" class="form-control" />
+                        <span asp-validation-for="Localidade" class="text-danger"></span>
+                    </div>
+                </div>
+                <br />
+
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label asp-for="NoFuncionarios">Nº de Funcionários</label>
+                        <input asp-for="NoFuncionarios" class="form-control" />
+                        <span asp-validation-for="NoFuncionarios" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label asp-for="ZonaAtuacao">Zona de Atuação</label>
+                        <input asp-for="ZonaAtuacao" class="form-control" />
+                        <span asp-validation-for="ZonaAtuacao" class="text-danger"></span>
+                    </div>
+                </div>
+                <br />
+
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label asp-for="LinkedIn">LinkedIn</label>
+                        <input asp-for="LinkedIn" class="form-control" />
+                        <span asp-validation-for="LinkedIn" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label asp-for="Facebook">Facebook</label>
+                        <input asp-for="Facebook" class="form-control" />
+                        <span asp-validation-for="Facebook" class="text-danger"></span>
+                    </div>
+                </div>
+                <br />
+
+                <button type="submit" class="btn btn-warning text-white font-weight-bold px-4" style="border-radius: 30px;">
+                    Salvar alterações
+                </button>
+            </form>
+
+            <!-- Zona password  -->
+            <hr class="my-4" />
+            <h5 class="fw-bold">Mudar password</h5>
+            <form asp-action="ChangePasswordEmpresa" asp-route-id="@Model.IdEmpresa" method="post" id="pwdForm">
+                <input type="hidden" name="id" value="@Model.IdEmpresa" />
+
+                <div class="row">
+                    <div class="form-group col-md-4">
+                        <label>Current password</label>
+                        <input name="currentPassword" id="currentPassword"
+                               type="password" class="form-control" required />
+                        <span id="errCurrent" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label>New password</label>
+                        <input name="newPassword" id="newPassword"
+                               type="password" class="form-control" required />
+                        <span id="errNew" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label>Confirm password</label>
+                        <input name="confirmPassword" id="confirmPassword"
+                               type="password" class="form-control" required />
+                        <span id="errConfirm" class="text-danger"></span>
+                    </div>
+                </div>
+                <br />
+                <button type="submit" class="btn btn-warning text-white px-4" style="border-radius: 30px;">Salvar alterações</button>
+            </form>
+
+            <!-- Zona apagar conta  -->
+            <hr class="my-4" />
+            <div>
+                <p class="lead">Pretende eliminar a conta da empresa?</p>
+                <form method="get" action='@Url.Action("Delete", "Empresa", new { id = Model.IdEmpresa })' onsubmit="return confirm('Tem certeza que deseja apagar a conta?');">
+                    <button type="submit" class="btn btn-danger text-white font-weight-bold px-4" style="border-radius: 30px;">
+                        Apagar conta
+                    </button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+    <br />
+    <h3 class="my-4 oferta_header">Histórico de reviews</h3>
+
+    <div class="card mb-5">
+        <div class="card-body p-4 bg-white">
+            <div class="table-responsive">
+                <table id="reviewsTable"
+                       class="table table-borderless table-hover mb-0 align-middle reviews-table">
+                    <thead class="border-bottom">
+                        <tr>
+                            <th>Data da Review</th>
+                            <th>Nome do utilizador</th>
+                            <th>Rating</th>
+                            <th>Descrição</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            var reviews = ViewBag.Reviews as List<teste_cliente.Models.Review>;
+                            if (reviews?.Any() == true)
+                            {
+                                foreach (var r in reviews)
+                                {
+                                    <tr>
+                                        <td>@r.DataCriacao.ToString("dd.MM.yyyy")</td>
+                                        <td class="username">@r.NomeUsuario</td>
+                                        <td>@r.Rating.ToString("0.0")</td>
+                                        <td>@r.Descricao</td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="4" class="text-center text-muted py-4">
+                                        Ainda não há reviews para esta empresa.
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    @section Scripts {
+        @{
+            await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        }
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+        <script>
+                $(function(){
+                if ($('#reviewsTable tbody tr').length > 1 ||
+                    !$('#reviewsTable tbody tr td').hasClass('text-muted')) {
+                    $('#reviewsTable').DataTable({
+                        paging:       true,
+                        searching:    false,
+                        info:         false,
+                        lengthChange: false,
+                        pageLength:   5,
+                        language: {
+                            url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/pt-PT.json'
+                        }
+                    });
+                }
+            });
+        </script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                var form = document.getElementById('editForm');
+                var emailInput = document.getElementById('emailInput');
+                var emailError = document.getElementById('emailError');
+
+                form.addEventListener('submit', function (event) {
+                    var emailValue = emailInput.value.trim();
+
+                    // Checar se o email tem "@@" e "."
+                    if (emailValue === '' || !emailValue.includes('@@') || !emailValue.includes('.')) {
+                        event.preventDefault(); // Impede o envio do formulário
+                        emailError.textContent = 'Por favor, insira um email válido.';
+                    } else {
+                        emailError.textContent = ''; // Limpa o erro se o email for válido
+                    }
+                });
+            });
+        </script>
+
+        <script>
+                document.addEventListener('DOMContentLoaded', () => {
+                var form = document.getElementById('pwdForm');
+                var cur = document.getElementById('currentPassword');
+                var neu = document.getElementById('newPassword');
+                var conf = document.getElementById('confirmPassword');
+
+                var eCur = document.getElementById('errCurrent');
+                var eNeu = document.getElementById('errNew');
+                var eConf = document.getElementById('errConfirm');
+
+                form.addEventListener('submit', function(e) {
+                // limpa msgs
+                eCur.textContent = eNeu.textContent = eConf.textContent = '';
+
+                let errors = [];
+
+                // 1) regras Identity front-end (exemplo)
+                let pwd = neu.value;
+                if (!/[A-Z]/.test(pwd))
+                    errors.push({field:eNeu, msg:"Deve ter ao menos 1 maiúscula."});
+                if (!/[0-9]/.test(pwd))
+                    errors.push({field:eNeu, msg:"Deve ter ao menos 1 número."});
+                if (!/[^a-zA-Z0-9]/.test(pwd))
+                    errors.push({field:eNeu, msg:"Deve ter ao menos 1 caractere especial."});
+                if (pwd.length < 6)
+                    errors.push({field:eNeu, msg:"Mínimo 6 caracteres."});
+
+                // 2) confirmação bate?
+                if (neu.value !== conf.value)
+                    errors.push({field:eConf, msg:"Confirmação não confere."});
+
+                if (errors.length > 0) {
+                    e.preventDefault();
+                    errors.forEach(err => err.field.textContent = err.msg);
+                }
+                });
+            });
+        </script>
+    }
+
+</div>

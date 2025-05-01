@@ -1,0 +1,140 @@
+﻿@model teste_cliente.DTOs.LoginRequestDTO;
+
+<div class="modal-overlay" id="loginModal">
+    <div class="modal-content" id="modalContent">
+        <button class="close-btn" id="closeModalBtn">&times;</button>
+
+        <h3>Login</h3>
+
+        <form asp-controller="Auth" asp-action="Login" method="post">
+            <div asp-validation-summary="All" class="text-danger text-center mb-2"></div>
+
+            <input asp-for="UserName" type="text" class="form-control" placeholder="Username..." />
+            <input asp-for="Password" type="password" class="form-control" placeholder="Password..." />
+
+            <button type="submit" class="btn-register">Login</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        const modal = document.getElementById('loginModal');
+        const closeBtn = document.getElementById('closeModalBtn');
+        const modalContent = document.getElementById('modalContent');
+
+        // Fecha o modal e redireciona
+        closeBtn.addEventListener('click', () => {
+            window.location.href = '/Home/Index'; // ou outra página
+        });
+
+        modal.addEventListener('click', (event) => {
+            if (!modalContent.contains(event.target)) {
+                window.location.href = '/Home/Index';
+            }
+        });
+    </script>
+}
+
+<style>
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: linear-gradient(to bottom right, #00B8D4, #6EE5E9);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        animation: fadeIn 0.3s ease-in-out;
+    }
+
+    .modal-content {
+        background-color: white;
+        border-radius: 20px;
+        padding: 2rem;
+        width: 90%;
+        max-width: 360px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        position: relative;
+        animation: slideDown 0.3s ease-in-out;
+    }
+
+    .form-control {
+        margin-bottom: 1rem;
+        border-radius: 10px;
+    }
+
+    .btn-register {
+        background-color: #F89B3D;
+        color: white;
+        border: none;
+        border-radius: 30px;
+        padding: 0.6rem 1.2rem;
+        width: 50%;
+        font-weight: bold;
+        margin: 0 auto; 
+        display: block;
+    }
+
+    .btn-register:hover {
+        background-color: #5de4d9;
+    }
+
+    .close-btn {
+        position: absolute;
+        top: 12px;
+        right: 16px;
+        font-size: 1.4rem;
+        cursor: pointer;
+        border: none;
+        background: none;
+        color: #999;
+    }
+
+    h3 {
+        text-align: center;
+        margin-bottom: 1rem;
+        font-weight: 600;
+    }
+</style>
+
+
+
+
+@* @model teste_cliente.DTOs.LoginRequestDTO;
+
+
+<form method="post">
+    <div class="container border p-4">
+        <div class="row text-center">
+            <h1>Login</h1>
+        </div>
+        <div class="row text-center">
+            <div asp-validation-summary="All" class="text-danger"></div>
+        </div>
+        <div class="row">
+            <div class="col-6 offset-3 pb-2">
+                <input asp-for="UserName" type="text" class="form-control" placeholder="Username..." />
+            </div>
+            
+            <div class="col-6 offset-3 pb-2">
+                <input asp-for="Password" type="password" class="form-control" placeholder="Password..." />
+
+            </div>
+            <div class="col-6 offset-3 pb-2">
+                <button type="submit" class="form-control btn-success" value="Submit">Login</button>
+
+            </div>
+        </div>
+    </div>
+
+
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+} *@

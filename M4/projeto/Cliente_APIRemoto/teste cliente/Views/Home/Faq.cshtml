@@ -1,0 +1,131 @@
+﻿@{
+    ViewData["Title"] = "Perguntas Frequentes";
+}
+
+<div class="container my-5">
+    <h3 class="mb-4 text-left fw-bold">Perguntas Frequentes</h3>
+
+    <div class="accordion" id="faqAccordion">
+
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="heading1">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1">
+                    <i class="bi bi-person-plus me-2"></i> Como posso registar-me no portal?
+                </button>
+            </h2>
+            <div id="collapse1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                <div class="accordion-body">
+                    Para te registares, clica no botão "Registar" no topo da página e preenche o formulário com os teus dados.
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="heading2">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse2">
+                    <i class="bi bi-unlock me-2"></i> Posso candidatar-me a ofertas sem fazer login?
+                </button>
+            </h2>
+            <div id="collapse2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                <div class="accordion-body">
+                    Sim, podes ver as ofertas mas terás de iniciar sessão para iniciar a candidatura.
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="heading3">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse3">
+                    <i class="bi bi-envelope me-2"></i> Como posso contactar uma empresa?
+                </button>
+            </h2>
+            <div id="collapse3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                <div class="accordion-body">
+                    Depois de te candidatares, a empresa poderá entrar em contacto contigo. Algumas ofertas têm informação de contacto disponível.
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="heading4">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse4">
+                    <i class="bi bi-key me-2"></i> Esqueci-me da minha palavra-passe. O que faço?
+                </button>
+            </h2>
+            <div id="collapse4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                <div class="accordion-body">
+                    No ecrã de login, clica em "Esqueci-me da palavra-passe" e segue os passos indicados para recuperares o acesso.
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="heading5">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse5">
+                    <i class="bi bi-pencil-square me-2"></i> Posso editar os meus dados depois de me registar?
+                </button>
+            </h2>
+            <div id="collapse5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                <div class="accordion-body">
+                    Sim, após iniciares sessão, podes aceder ao teu perfil e atualizar os teus dados pessoais ou de empresa.
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="heading6">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse6">
+                    <i class="bi bi-briefcase me-2"></i> Como posso publicar uma oferta de emprego?
+                </button>
+            </h2>
+            <div id="collapse6" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                <div class="accordion-body">
+                    Apenas utilizadores registados como empresa podem publicar ofertas. Após o login, vai ao painel da empresa e seleciona "Criar Oferta".
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="heading7">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse7">
+                    <i class="bi bi-cash-coin me-2"></i> Existe algum custo para usar o portal?
+                </button>
+            </h2>
+            <div id="collapse7" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                <div class="accordion-body">
+                    Não. O uso do portal é totalmente gratuito para candidatos. Algumas funcionalidades extra para empresas podem ter custos associados.
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="heading8">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse8">
+                    <i class="bi bi-send-check me-2"></i> O que acontece depois de me candidatar a uma oferta?
+                </button>
+            </h2>
+            <div id="collapse8" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                <div class="accordion-body">
+                    A empresa recebe a tua candidatura e poderá analisar o teu perfil. Se estiverem interessados, entrarão em contacto contigo diretamente.
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<style>
+    .accordion-button:not(.collapsed) {
+        background-color: #F2994A;
+    }
+
+    .accordion-button:focus {
+        box-shadow: 0 0 0 0.25rem #62E0E6;
+        border-color: #62E0E6;
+    }
+
+    .accordion-button {
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+</style>
+

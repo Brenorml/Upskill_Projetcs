@@ -1,0 +1,355 @@
+﻿@using System.Security.Claims
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor httpAcc
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] Jobs - Ofertas de emprego</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/FlatlyTheme.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css" asp-append-version="true" />
+
+    @* CSS para as noticias *@
+    <link rel="stylesheet" href="~/css/NewsStyle.css" asp-append-version="true" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+<body class="@ViewData["BodyClass"]">
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm nav-bar-fundo">
+            <div class="container-fluid menu-wrapper">
+                <a href="/">
+                    <img src="@Url.Content("~/img/logo.svg")" alt="Logotipo Jobs" />
+                </a>
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav menu">
+                        <li class="nav-item">
+                            <a class="nav-link link-menu" asp-area="" asp-controller="OfertaEmprego" asp-action="Index">Emprego</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link link-menu" asp-area="" asp-controller="Noticias" asp-action="Index">Noticias</a>
+                        </li>
+
+                    </ul>
+                    <ul class="navbar-nav ms-auto">
+                        @{
+
+                            var x = httpAcc.HttpContext.User.Claims.ToList();
+                            //List<Claim> list = new List<Claim>();
+                            //string[] item;
+                            //foreach (item in x.)
+                            //{
+
+                            //}
+                            //var t = x.Last().Value;
+                            //var t = x.Last().ToString();
+                        }
+                        @if (User.IsInRole(SD.Role_Empresa))
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="menuEmpresa" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Empresa
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="menuEmpresa">
+                                    @{
+                                        var idempresa = User.FindFirst("IdEmpresa")?.Value;
+                                    }
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="Empresa" asp-action="Details" asp-route-id="@idempresa">Perfil</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="OfertaEmprego" asp-action="Create">Ofertas</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="OfertaEmprego" asp-action="Historico">Histórico</a>
+                                    </li>                                    
+                                    <li>
+                                         <a class="dropdown-item" asp-controller="Auth" asp-action="Logout">Logout</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <a asp-controller="Empresa" asp-action="Details" asp-route-id="@idempresa">
+                            <img src="@Url.Action("GetLogoImage", "Logo", new { id = idempresa })"
+                                 alt="Foto de Perfil"
+                                     style="width: 50px; height: 50px; border-radius: 50%; object-fit: contain;" />
+                            </a>    
+                        }
+
+                        @if (User.IsInRole(SD.Role_Candidato))
+                        {
+                            <li class="nav-item d-flex align-items-center position-relative me-3">
+                                <a class="nav-link d-flex align-items-center position-relative"
+                                   href="javascript:void(0);"
+                                   onclick="abrirFavoritos()"
+                                   data-bs-toggle="modal"
+                                   data-bs-target="#favoritosModal">
+   
+                                    <i class="bi bi-heart-fill fs-5"></i> <!-- Remover a classe mb-5 -->
+                                    <span id="favoritosBadge"
+                                          class="position-absolute top-0 start-100 translate-middle badge rounded-pill"
+                                          style="background-color: #F2994A;">
+                                        0
+                                    </span>
+                                </a>
+                            </li>
+                            <li class="nav-item dropdown">
+                            
+                                <a class="nav-link dropdown-toggle" href="#" id="menuCandidato" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Candidato
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="menuCandidato">
+                                    @{
+                                        var idCandidato = User.FindFirst("IdCandidato")?.Value;
+                                    }
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="Candidato" asp-action="Details" asp-route-id="@idCandidato">Perfil</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="Candidato" asp-action="HistoricoCandidaturas">Histórico</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="CV" asp-action="Create">CV</a>
+                                    </li>                                    
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="Auth" asp-action="Logout">Logout</a>
+                                    </li>
+                                    
+                                </ul>
+                            </li>
+
+                            var candidatoId = User.FindFirst("IdCandidato")?.Value; // ID do candidato
+                            
+                                <li class="nav-item">
+                                    @{
+                                        var defaultImage = "/img/icone_perfil.png"; 
+                                    
+                                    }
+                                <a asp-controller="Candidato" asp-action="Details" asp-route-id="@candidatoId">
+                                    <img src="@Url.Action("GetImage", "Foto", new { id = candidatoId })"
+                                         onerror="this.onerror=null;this.src='@defaultImage'"
+                                         alt="Foto de Perfil"
+                                         style="width: 50px; height: 50px; border-radius: 50%;" />
+                                </a>
+                                </li>
+                        }
+
+                        @if (User.IsInRole(SD.Role_Admin))
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="menuAdmin" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Admin
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="menuAdmin">
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="Auth" asp-action="Register">Criar Conta</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="Empresa" asp-action="Index">Empresas</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="Candidato" asp-action="Index">Candidatos</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="Auth" asp-action="Logout">Logout</a>
+                                    </li>
+                                </ul>
+                            </li>
+
+                            <img src="~/img/icone_perfil.png"
+                                 alt="Foto de Perfil"
+                                 style="width: 50px; height: 50px; border-radius: 50%;" />
+                        }
+                    </ul>
+                </div>
+                <div align="right">
+                    @if (!User.Identity.IsAuthenticated)
+                    {
+                        <table>
+                            <tr>
+                                <td>
+                                    <a type="button"  class="botao-login" asp-controller="Auth" asp-action="Login">Login</a>
+                                </td>
+                                <td>
+                                    <a type="button" class="botao-registo" asp-controller="Auth" asp-action="Register">Registo</a>
+                                </td>
+                            </tr>
+                        </table>
+                    }
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="modal fade" id="favoritosModal" tabindex="-1" aria-labelledby="favoritosModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Ofertas Favoritas</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="favoritosContainer" class="row g-3">
+                        <!-- Cards aqui -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+
+    <footer class="footer_wrapper">
+        <div class="footer">
+            <div><img src="~/img/logo.svg" alt="Logotipo Jobs" /></div><div>&copy; 2025 JOBS - All rights Reserved</div><div><a asp-controller="Home" asp-action="Faq" class="faq_link">FAQ</a></div>
+        </div>
+    </footer>
+
+    @Html.AntiForgeryToken()
+
+    <script>
+        document.addEventListener("DOMContentLoaded", atualizarBadgeFavoritos);
+
+                async function atualizarBadgeFavoritos() {
+            try {
+                const res = await fetch('/OfertaEmprego/GetFavoritosIds');
+                if (!res.ok) {
+                    console.error('Erro ao buscar favoritos:', res.status);
+                    return;
+                }
+
+                const ids = await res.json();
+                const badge = document.getElementById('favoritosBadge');
+
+                if (badge) {
+                    badge.textContent = ids.length || '0';
+                }
+            } catch (error) {
+                console.error('Erro ao atualizar badge de favoritos:', error);
+            }
+        }
+
+                async function abrirFavoritos() {
+            try {
+                const container = document.getElementById('favoritosContainer');
+                container.innerHTML = '<p class="text-center">Carregando favoritos...</p>';
+
+                // Buscar as ofertas favoritas
+                const res = await fetch('/OfertaEmprego/GetOfertasFavoritas');
+                if (!res.ok) {
+                    throw new Error(`Erro ao carregar favoritos: ${res.status}`);
+                }
+
+                const ofertas = await res.json();
+                container.innerHTML = '';
+
+                // Verificar se há favoritos
+                if (!ofertas || ofertas.length === 0) {
+                    container.innerHTML = '<p class="text-center text-muted">Nenhuma oferta favorita.</p>';
+                    return;
+                }
+
+                // Renderizar os cards
+                ofertas.forEach(oferta => {
+
+                // Verificar se o idOferta existe e está no formato correto
+                const idOferta = oferta.idOferta || oferta.IdOferta; // Verificar ambos os formatos possíveis
+
+                // Corrigir a URL para usar o formato de query string
+                const detailsUrl = `/OfertaEmprego/Details?id=${idOferta}`;
+
+                    const card = `
+                        <div class="col-md-6">
+                            <div class="card shadow-sm rounded-3 mb-3">
+                                <div class="card-body">
+                                    <h5 class="card-title">${oferta.titulo || 'Sem título'}</h5>
+                                    <p class="card-text mb-1 text-muted">${oferta.localização || 'Localização não especificada'}</p>
+                                    <div class="d-flex justify-content-between align-items-center mt-2">
+                                        <a href="${detailsUrl}" class="btn btn-primary btn-sm" style="border-radius: 30px; background-color: #5de4d9; border: 0;">Ver detalhes</a>
+                                        <button class="btn btn-outline-warning btn-sm remove-favorito" data-id="${oferta.idOferta}" style="border-radius: 30px;">
+                                            <i class="fas fa-star"></i> Remover
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    container.insertAdjacentHTML('beforeend', card);
+                });
+
+                // Adicionar eventos para os botões de remover
+                document.querySelectorAll('.remove-favorito').forEach(btn => {
+                    btn.addEventListener('click', async function() {
+                        const id = this.getAttribute('data-id');
+
+                        // Chamar a API para remover o favorito
+                        const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+                        const res = await fetch('/OfertaEmprego/ToggleFavorito', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded',
+                                'RequestVerificationToken': token
+                            },
+                            body: `idOferta=${id}`
+                        });
+
+                        const result = await res.json();
+
+                        if (result.success) {
+                            // Remover o card do modal
+                            this.closest('.col-md-6').remove();
+
+                            // Atualizar o ícone na lista principal se existir
+                            const starIcon = document.querySelector(`.toggle-favorito[data-id="${id}"]`);
+                            if (starIcon) {
+                                starIcon.classList.remove('fas');
+                                starIcon.classList.add('far');
+                                starIcon.style.color = "#ccc";
+                            }
+
+                            // Atualizar o contador de favoritos
+                            atualizarBadgeFavoritos();
+
+                            // Se não houver mais favoritos, mostrar mensagem
+                            if (document.querySelectorAll('#favoritosContainer .col-md-6').length === 0) {
+                                document.getElementById('favoritosContainer').innerHTML =
+                                    '<p class="text-center text-muted">Nenhuma oferta favorita.</p>';
+                            }
+                        }
+                    });
+                });
+            } catch (error) {
+                console.error('Erro ao carregar favoritos:', error);
+                document.getElementById('favoritosContainer').innerHTML =
+                    '<p class="text-center text-danger">Erro ao carregar ofertas favoritas: ' + error.message + '</p>';
+            }
+        }
+    </script>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="//cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+    @* <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script> *@
+
+    @await RenderSectionAsync("Scripts", required: false)
+    
+</body>
+</html>

@@ -1,0 +1,235 @@
+﻿@model List<teste_cliente.Models.Noticia>
+
+@{
+    ViewData["Title"] = "Notícias de Emprego";
+}
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-12">
+            <h3 class="my-4 oferta_header">Notícias de Emprego</h3>
+
+            @if (ViewBag.UsingDemoData == true)
+            {
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <strong>Atenção!</strong> Exibindo dados de demonstração devido a problemas na conexão com a API de notícias.
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+
+            @if (ViewBag.ErrorMessage != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <h5>Erro ao buscar notícias</h5>
+                    <p>@ViewBag.ErrorMessage</p>
+                    @if (ViewBag.ErrorDetails != null)
+                    {
+                        <hr>
+                        <details>
+                            <summary>Detalhes técnicos</summary>
+                            <pre class="small">@ViewBag.ErrorDetails</pre>
+                        </details>
+                    }
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+
+            @if (Model != null && Model.Any())
+            {
+                <!-- Carrossel de Notícias -->
+                <div id="noticiasCarrossel" class="carousel slide shadow" data-bs-ride="carousel">
+                    <!-- Indicadores -->
+                    <div class="carousel-indicators">
+                        @for (int i = 0; i < Model.Count; i++)
+                        {
+                            <button type="button" data-bs-target="#noticiasCarrossel" data-bs-slide-to="@i" class="@(i == 0 ? "active" : "")" aria-current="@(i == 0 ? "true" : "false")" aria-label="Slide @(i+1)"></button>
+                        }
+                    </div>
+
+                    <!-- Slides -->
+                    <div class="carousel-inner">
+                        @for (int i = 0; i < Model.Count; i++)
+                        {
+                            var noticia = Model[i];
+                            <div class="carousel-item @(i == 0 ? "active" : "")" data-bs-interval="8000">
+                                <div class="news-slide d-flex align-items-center" style="height: 400px; background-color: #f8f9fa; padding: 20px;">
+                                    <div class="container">
+                                        <div class="row">
+                                            <div class="col-md-5">
+                                                @if (!string.IsNullOrEmpty(noticia.UrlToImage) && !noticia.UrlToImage.StartsWith("/images/"))
+                                                {
+                                                    <img src="@noticia.UrlToImage" alt="@noticia.Title" class="news-image img-fluid rounded shadow-sm" style="max-height: 300px; object-fit: cover;">
+                                                }
+                                                else if (!string.IsNullOrEmpty(noticia.UrlToImage) && noticia.UrlToImage.StartsWith("/images/"))
+                                                {
+                                                    <!-- Para imagens de demonstração, usamos um placeholder -->
+                                                    <div class="news-image-placeholder rounded d-flex align-items-center justify-content-center bg-light" style="height: 300px;">
+                                                        <i class="fa fa-newspaper-o fa-4x text-muted"></i>
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    <div class="news-image-placeholder rounded d-flex align-items-center justify-content-center bg-light" style="height: 300px;">
+                                                        <i class="fa fa-newspaper-o fa-4x text-muted"></i>
+                                                    </div>
+                                                }
+                                            </div>
+                                            <div class="col-md-7">
+                                                <div class="news-content p-3">
+                                                    <h3 class="mb-3">@noticia.Title</h3>
+                                                    <p class="text-muted">
+                                                        <small>
+                                                            <i class="fa fa-user me-2"></i>@(string.IsNullOrEmpty(noticia.Author) ? noticia.Source.Name : noticia.Author)
+                                                            <i class="fa fa-calendar ms-3 me-2"></i>@noticia.PublishedAt.ToString("dd/MM/yyyy HH:mm")
+                                                        </small>
+                                                    </p>
+                                                    <p class="news-description">@noticia.Description</p>
+                                                    <a href="@(noticia.Url == "#" ? "javascript:void(0)" : noticia.Url)" target="@(noticia.Url == "#" ? "_self" : "_blank")" class="btn custom-btn mt-3">
+                                                        @(noticia.Url == "#" ? "Notícia de demonstração" : "Ler Mais")
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                    <!-- Controles -->
+                    <button class="carousel-control-prev" type="button" data-bs-target="#noticiasCarrossel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Anterior</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#noticiasCarrossel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Próximo</span>
+                    </button>
+                </div>
+                
+                <!-- Lista de Notícias -->
+                <div class="news-list mt-5">
+                    <h3 class="my-4 oferta_header">Últimas Notícias</h3>
+                    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                        @foreach (var noticia in Model)
+                        {
+                            <div class="col">
+                                <partial name="_NewsCard" model="noticia" />
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info">
+                    Não foram encontradas notícias. Tente novamente mais tarde.
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .news-slide {
+            position: relative;
+        }
+
+        .carousel-control-prev,
+        .carousel-control-next {
+            width: 5%;
+            background-color: rgba(110, 229, 233, 1);
+        }
+
+        .carousel-indicators {
+            bottom: 0;
+        }
+
+        .carousel {
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .news-description {
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+        }
+
+        .news-description-small {
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+
+        .card {
+            transition: transform 0.3s ease;
+        }
+
+            .card:hover {
+                transform: translateY(-5px);
+            }
+
+        /* Estilo adicionado para os detalhes de erro */
+        details {
+            margin-top: 10px;
+        }
+
+            details summary {
+                cursor: pointer;
+                color: #0d6efd;
+            }
+
+        pre {
+            white-space: pre-wrap;
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        .custom-btn {
+            border-radius: 30px;
+            background-color: #F2994A;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            display: inline-block;
+            transition: background-color 0.3s ease;
+        }
+
+        .custom-btn:hover {
+            background-color: #E6892F;
+            color: white;
+        }
+
+        .custom-btn:focus {
+            background-color: #E6892F;
+            outline: none;
+            color: white;
+        }
+    </style>
+}
+
+@section Scripts {
+    <script>
+        // Inicializar o carrossel
+        $(document).ready(function() {
+            var carousel = new bootstrap.Carousel(document.getElementById('noticiasCarrossel'), {
+                interval: 8000,
+                wrap: true
+            });
+
+            // Ajuste das imagens que falham ao carregar
+            $("img").on("error", function() {
+                $(this).replaceWith('<div class="news-image-placeholder rounded d-flex align-items-center justify-content-center bg-light" style="height: 300px;"><i class="fa fa-newspaper-o fa-4x text-muted"></i></div>');
+            });
+        });
+    </script>
+}
+
+

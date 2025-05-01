@@ -1,0 +1,366 @@
+﻿@model IEnumerable<teste_cliente.Models.Empresa>
+
+@{
+    ViewData["Title"] = "Index";
+}
+<div class="container" style="padding-top:30px; padding-bottom:40px">
+<div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="my-4 oferta_header">Lista Empresas</h3>
+    </div>
+
+<div class="card shadow-sm">
+    <div class="card-body p-0">
+        <table class="table table-hover" id="Tabela">
+            <thead class="table-primary">
+                <tr>
+                    <th>Id</th>
+                    <th>Nome Empresa</th>
+                    @* <th>Localidade</th> *@
+                    <th>Email</th>
+                    @* <th>Zona Atuação</th> *@
+                    <th>
+                        Ação <i class="fa fa-sort"></i>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => item.IdEmpresa)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Nome)</td>
+                        @* <td>@Html.DisplayFor(modelItem => item.Localidade)</td> *@
+                        <td>@Html.DisplayFor(modelItem => item.Email)</td>
+                        @* <td>@Html.DisplayFor(modelItem => item.ZonaAtuacao)</td> *@
+                        <td>
+                            @if (User.IsInRole(SD.Role_Admin))
+                            {
+                                    <a href="@Url.Action("Details", new { id=item.IdEmpresa })" class="btn btn-warning" style="border-radius: 30px;">Editar</a>
+                                    <a href="@Url.Action("Delete", new { id=item.IdEmpresa })" class="btn btn-danger" style="border-radius: 30px;">Apagar</a>
+                            }
+                            @* else
+                            {
+                                <a href="@Url.Action("Details", new { id=item.IdEmpresa })" class="btn btn-info">Detalhes</a>
+                            } *@
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="card-footer d-flex justify-content-between align-items-center p-2 pagination-footer">
+        <div class="rows-per-page">
+            Rows per page:
+            <div class="dropdown d-inline-block">
+                <button class="btn btn-sm dropdown-toggle rows-dropdown" type="button" id="rowsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    <span id="selectedRowCount">10</span>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="rowsDropdown">
+                    <li><a class="dropdown-item row-option" data-value="5" href="#">5</a></li>
+                    <li><a class="dropdown-item row-option" data-value="10" href="#">10</a></li>
+                    <li><a class="dropdown-item row-option" data-value="25" href="#">25</a></li>
+                    <li><a class="dropdown-item row-option" data-value="50" href="#">50</a></li>
+                    <li><a class="dropdown-item row-option" data-value="100" href="#">100</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="pagination-container d-flex">
+            <div id="pagination-numbers" class="me-3">
+                <!-- Páginas serão geradas dinamicamente pelo JavaScript -->
+            </div>
+            <div class="go-to-page d-flex align-items-center">
+                Go to page
+                <input type="text" id="gotoPage" class="form-control form-control-sm mx-2" style="width: 50px;">
+                <a href="#" id="gotoPageBtn" class="next-page-arrow">
+                    <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            var table = $('#Tabela').DataTable({
+                pagingType: 'full_numbers',
+                pageLength: 10,
+                lengthMenu: [5, 10, 25, 50, 100],
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.10.25/i18n/Portuguese.json'
+                },
+                dom: "<'row'<'col-sm-12'tr>>",
+                drawCallback: function(settings) {
+                    updateCustomPagination(this.api());
+                },
+                initComplete: function() {
+                    // Esconder elementos padrão do DataTables
+                    $('#Tabela_wrapper .dataTables_length').hide();
+                    $('#Tabela_wrapper .dataTables_filter').hide();
+                    $('#Tabela_wrapper .dataTables_info').hide();
+                    $('#Tabela_wrapper .dataTables_paginate').hide();
+
+                    // Inicializar a paginação personalizada
+                    updateCustomPagination(table);
+
+                    // Configurar o dropdown de linhas por página
+                    $('.row-option').on('click', function(e) {
+                        e.preventDefault();
+                        var value = $(this).data('value');
+                        $('#selectedRowCount').text(value);
+                        table.page.len(parseInt(value)).draw();
+                    });
+
+                    // Configurar o botão "Go to page"
+                    $('#gotoPageBtn').on('click', function(e) {
+                        e.preventDefault();
+                        goToPage();
+                    });
+
+                    // Permitir usar Enter no campo "Go to page"
+                    $('#gotoPage').on('keypress', function(e) {
+                        if (e.which == 13) {
+                            e.preventDefault();
+                            goToPage();
+                        }
+                    });
+
+                    function goToPage() {
+                        var page = parseInt($('#gotoPage').val());
+                        var totalPages = table.page.info().pages;
+
+                        if (page > 0 && page <= totalPages) {
+                            table.page(page - 1).draw('page');
+                        }
+                    }
+                }
+            });
+
+            // Função para atualizar a paginação personalizada
+            function updateCustomPagination(table) {
+                var info = table.page.info();
+                var currentPage = info.page + 1;
+                var totalPages = info.pages;
+                var paginationHtml = '';
+
+                // Adicionar botão de página anterior
+                if (currentPage > 1) {
+                    paginationHtml += '<a href="#" class="page-prev" title="Página anterior"><i class="fa fa-chevron-left"></i></a>';
+                } else {
+                    paginationHtml += '<a href="#" class="page-prev disabled" title="Página anterior"><i class="fa fa-chevron-left"></i></a>';
+                }
+
+                // Lógica para determinar quais números de página mostrar
+                var startPage = Math.max(1, currentPage - 1);
+                var endPage = Math.min(totalPages, currentPage + 1);
+
+                // Garantir que pelo menos 3 páginas sejam mostradas se possível
+                if (endPage - startPage + 1 < 3 && totalPages > 2) {
+                    if (currentPage <= 2) {
+                        endPage = Math.min(3, totalPages);
+                    } else if (currentPage >= totalPages - 1) {
+                        startPage = Math.max(1, totalPages - 2);
+                    }
+                }
+
+                // Primeira página
+                if (startPage > 1) {
+                    paginationHtml += '<a href="#" class="page-number" data-page="1">1</a>';
+                    if (startPage > 2) {
+                        paginationHtml += '<span class="ellipsis">...</span>';
+                    }
+                }
+
+                // Páginas intermediárias
+                for (var i = startPage; i <= endPage; i++) {
+                    if (i === currentPage) {
+                        paginationHtml += '<a href="#" class="page-number active" data-page="' + i + '">' + i + '</a>';
+                    } else {
+                        paginationHtml += '<a href="#" class="page-number" data-page="' + i + '">' + i + '</a>';
+                    }
+                }
+
+                // Última página
+                if (endPage < totalPages) {
+                    if (endPage < totalPages - 1) {
+                        paginationHtml += '<span class="ellipsis">...</span>';
+                    }
+                    paginationHtml += '<a href="#" class="page-number" data-page="' + totalPages + '">' + totalPages + '</a>';
+                }
+
+                // Adicionar botão de próxima página
+                if (currentPage < totalPages) {
+                    paginationHtml += '<a href="#" class="page-next" title="Próxima página"><i class="fa fa-chevron-right"></i></a>';
+                } else {
+                    paginationHtml += '<a href="#" class="page-next disabled" title="Próxima página"><i class="fa fa-chevron-right"></i></a>';
+                }
+
+                // Atualizar o HTML da paginação
+                $('#pagination-numbers').html(paginationHtml);
+
+                // Adicionar event listeners para os números de página
+                $('.page-number').on('click', function(e) {
+                    e.preventDefault();
+                    var page = $(this).data('page');
+                    table.page(page - 1).draw('page');
+                });
+
+                // Adicionar event listeners para os botões de navegação
+                $('.page-prev:not(.disabled)').on('click', function(e) {
+                    e.preventDefault();
+                    table.page('previous').draw('page');
+                });
+
+                $('.page-next:not(.disabled)').on('click', function(e) {
+                    e.preventDefault();
+                    table.page('next').draw('page');
+                });
+            }
+        });
+    </script>
+
+    <style>
+        /* Estilo para os cabeçalhos da tabela */
+        .table thead th {
+            background-color: #e6f3ff;
+            color: #252525;
+            font-weight: 500;
+            border-bottom: 2px solid #ddd;
+        }
+
+        /* Estilo para os botões de ação */
+        .btn-warning {
+            background-color: #f7a54a;
+            border-color: #f7a54a;
+            color: white;
+            padding: 0.75rem 1rem;
+            font-size: 0.8rem;
+        }
+
+        .btn-danger {
+            background-color: #f74a4a;
+            border-color: #f74a4a;
+            padding: 0.75rem 1rem;
+            font-size: 0.8rem;
+        }
+
+        .btn-info {
+            background-color: #4aa5f7;
+            border-color: #4aa5f7;
+            color: white;
+            padding: 0.75rem 1rem;
+            font-size: 0.8rem;
+        }
+
+        /* Estilo para o card que contém a tabela */
+        .card {
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #e6e6e6;
+        }
+
+        /* Estilo para as linhas da tabela */
+        .table tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        /* Estilo para a paginação */
+        .pagination-footer {
+            border-top: 1px dashed #ccc;
+            padding: 5px 10px;
+        }
+
+        .rows-per-page {
+            font-size: 0.8rem;
+            color: #666;
+            display: flex;
+            align-items: center;
+        }
+
+        .rows-dropdown {
+            background-color: transparent;
+            border: none;
+            color: #007bff;
+            padding: 0 5px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            margin-left: 5px;
+        }
+
+            .rows-dropdown::after {
+                margin-left: 5px;
+            }
+
+        .dropdown-item.active,
+        .dropdown-item:active {
+            background-color: #e9ecef;
+            color: #212529;
+        }
+
+        #pagination-numbers {
+            display: flex;
+            align-items: center;
+        }
+
+        .page-number, .page-prev, .page-next {
+            display: inline-block;
+            padding: 2px 8px;
+            color: #333;
+            text-decoration: none;
+            margin: 0 2px;
+        }
+
+            .page-number.active {
+                background-color: #007bff;
+                color: white;
+                border-radius: 3px;
+            }
+
+        .ellipsis {
+            padding: 0 5px;
+            color: #666;
+        }
+
+        .go-to-page {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+            .go-to-page input {
+                height: 25px;
+                padding: 0 5px;
+            }
+
+        .next-page-arrow {
+            color: #007bff;
+            font-size: 1rem;
+            margin-left: 5px;
+        }
+
+        .page-prev, .page-next {
+            color: #007bff;
+        }
+
+            .page-prev.disabled, .page-next.disabled {
+                color: #ccc;
+                cursor: not-allowed;
+            }
+
+        /* Estilo para o botão Create */
+        .btn-primary {
+            background-color: #0d6efd;
+            border-color: #0d6efd;
+            color: white;
+            padding: 0.5rem 1.5rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+            .btn-primary:hover {
+                background-color: #0b5ed7;
+                border-color: #0a58ca;
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            }
+    </style>
+}
